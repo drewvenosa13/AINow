@@ -15,9 +15,9 @@ const articles = [
   // Add more articles here
 ];
 
-const News = () => {
+const AIAndBusiness = () => {
   return (
-    <div className="news-page">
+    <div className="biz-page">
       <h1>News</h1>
       <p>Latest news and updates on AI and its applications in various domains.</p>
       <div className="article-grid">
@@ -29,4 +29,4 @@ const News = () => {
   );
 };
 
-export default News;
+export default AIAndBusiness;

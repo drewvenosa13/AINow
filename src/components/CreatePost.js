@@ -1,86 +1,86 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { createPost } from "../services/postsService.js";
-import { getTopics } from "../services/topicsService";
-import { AuthContext } from "../contexts/AuthContext";
+import React, { useState } from "react";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../components/firebase";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
-  const [image, setImage] = useState("");
-  const [summary, setSummary] = useState("");
-  const [topicId, setTopicId] = useState("");
   const [content, setContent] = useState("");
-  const [topics, setTopics] = useState([]);
-  const { currentUser } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const [topic, setTopic] = useState("AI Beginners");
+  const [summary, setSummary] = useState("");
+  const [submitStatus, setSubmitStatus] = useState(false);
+  const [imageURL, setImageURL] = useState("");
 
-  useEffect(() => {
-    const fetchTopics = async () => {
-      const topics = await getTopics();
-      setTopics(topics);
-    };
-    fetchTopics();
-  }, []);
-
-  const handleTitleChange = (e) => setTitle(e.target.value);
-  const handleImageChange = (e) => setImage(e.target.value);
-  const handleSummaryChange = (e) => setSummary(e.target.value);
-  const handleTopicChange = (e) => setTopicId(e.target.value);
-  const handleContentChange = (e) => setContent(e.target.value);
-
+  const handleImageUpload = (e) => {
+    setImageURL(e.target.value);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const id = title.replace(/\s+/g, "-").toLowerCase();
+    const docData = {
+      id,
+      title,
+      content,
+      topic,
+      summary,
+      createdAt: new Date(),
+      image: imageURL
+    };
+    console.log('Submitting data: ', docData)
     try {
-      await createPost({
-        title,
-        image,
-        summary,
-        content,
-        topicId,
-        author: currentUser.email,
-      });
-      navigate("/news");
+      await addDoc(collection(db, "posts"), docData);
+      setTitle("");
+      setContent("");
+      alert("Post successfully created.");
+      setSubmitStatus(true);
     } catch (error) {
-      console.error(error);
+      alert("Error creating post: " + error.message);
     }
   };
 
-  if (!currentUser || !["drewvenosa13@outlook.com", "josepholiverbiz@gmail.com"].includes(currentUser.email)) {
-    return (
-      <div className="CreatePost">
-        <h1>Unauthorized Access</h1>
-        <p>You must be logged in as an authorized user to access this page.</p>
-      </div>
-    );
-  }
-
   return (
     <div className="CreatePost">
-      <h1>Create Post</h1>
+      <h1>Create a Post</h1>
+      {submitStatus && <p>Post submitted successfully!</p>} {/* <-- Add this line */}
       <form onSubmit={handleSubmit}>
+        <label htmlFor="image">Image URL:</label>
+        <input
+        type="text"
+        id="imageUrl"
+        name="imageUrl"
+        value={imageURL}
+        onChange={handleImageUpload}
+        />
         <label>Title:</label>
-        <input type="text" value={title} onChange={handleTitleChange} required />
-        <br />
-        <label>Image URL:</label>
-        <input type="text" value={image} onChange={handleImageChange} required />
-        <br />
-        <label>Summary:</label>
-        <input type="text" value={summary} onChange={handleSummaryChange} required />
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
         <br />
         <label>Topic:</label>
-        <select value={topicId} onChange={handleTopicChange} required>
-          <option value="">-- Select a topic --</option>
-          {topics.map((topic) => (
-            <option key={topic.id} value={topic.id}>
-              {topic.name}
-            </option>
-          ))}
+        <select value={topic} onChange={(e) => setTopic(e.target.value)}>
+          <option value="AI Beginners">AI Beginners</option>
+          <option value="AIAndMedia">AI and Media</option>
+          <option value="AIAndGovernment">AI and Government</option>
+          <option value="AIAndBusiness">AI and Business</option>
+          <option value="News">News</option>
         </select>
         <br />
+        <label>Summary:</label>
+        <textarea
+          value={summary}
+          onChange={(e) => setSummary(e.target.value)}
+          required
+        />
         <label>Content:</label>
-        <textarea value={content} onChange={handleContentChange} required />
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          required
+        />
         <br />
-        <button type="submit">Create</button>
+        <button type="submit">Submit</button>
       </form>
     </div>
   );

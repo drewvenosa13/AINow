@@ -1,12 +1,15 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
-const ArticleCard = ({ title, imageUrl, summary }) => {
+const ArticleCard = ({ id, title, imageUrl, summary }) => {
   return (
-    <div className="article-card">
-      <img src={imageUrl} alt={title} />
-      <h3>{title}</h3>
-      <p>{summary}</p>
-    </div>
+    <NavLink to={`/post/${id}`}>
+      <div className="article-card">
+        <img src={imageUrl} alt={title} />
+        <h3>{title}</h3>
+        <p>{summary}</p>
+      </div>
+    </NavLink>
   );
 };
 

@@ -9,11 +9,6 @@ const Header = () => {
   const authorizedEmails = ["drewvenosa13@outlook.com", "josepholiverbiz@gmail.com"];
   const isAuthorizedUser = currentUser && authorizedEmails.includes(currentUser.email);
 
-  const getInitials = (name) => {
-    const names = name.split(" ");
-    return names[0].charAt(0) + (names[1] ? names[1].charAt(0) : '');
-  };
-
   const toggleTopics = () => {
     setShowTopics(!showTopics);
   };
@@ -57,9 +52,11 @@ const Header = () => {
         </NavLink>
       )}
       {currentUser && (
-        <div className="initials">
-          {getInitials(currentUser.displayName)}
-        </div>
+        <>
+          <NavLink to="/profile" className="nav-link">
+            Profile
+          </NavLink>
+        </>
       )}
     </nav>
   );
