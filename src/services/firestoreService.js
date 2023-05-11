@@ -1,7 +1,9 @@
-import { firestore } from '../components/firebase';
+import {doc, setDoc} from 'firebase/firestore';
+import {db} from '../components/firebase';
+import {collection, addDoc} from 'firebase/firestore';
 
 // Create a reference to the Firestore collection you want to interact with
-const exampleCollection = firestore.collection('example');
+const exampleCollection = db.collection('example');
 
 export const getExampleDocuments = async () => {
   try {
@@ -39,4 +41,22 @@ export const deleteExampleDocument = async (documentId) => {
   } catch (error) {
     throw error;
   }
+};
+
+export const createUserInFirestore = async (email) => {
+  const userRef = doc(db, "users", email);
+  await setDoc(userRef, {
+    email: email,
+    account: true,
+  });
+};
+
+
+export const logPageTimeSpent = async (page_path, time_spent) => {
+  const pageViewsRef = collection(db, "pageviews");
+  await addDoc(pageViewsRef, {
+    page_path: page_path,
+    time_spent: time_spent,
+    timestamp: new Date(),
+  });
 };

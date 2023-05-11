@@ -1,8 +1,13 @@
+import dotenv from 'dotenv';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration.js';
+import 'quill/dist/quill.snow.css'
+
+
+dotenv.config();
 
 ReactDOM.render(
   <React.StrictMode>

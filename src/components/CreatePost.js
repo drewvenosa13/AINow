@@ -1,21 +1,52 @@
 import React, { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 import { db } from "../components/firebase";
+import { useNavigate } from "react-router-dom";
+import Quill from "quill";
+import "quill/dist/quill.snow.css";
 
 const CreatePost = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [topic, setTopic] = useState("AI Beginners");
-  const [summary, setSummary] = useState("");
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+    topic: "",
+    summary: "",
+    imageURL: "",
+  });
   const [submitStatus, setSubmitStatus] = useState(false);
-  const [imageURL, setImageURL] = useState("");
+  
+  // Add this function after the useState declarations
+  const initializeQuill = () => {
+    const quill = new Quill("#editor", {
+      theme: "snow",
+    });
 
-  const handleImageUpload = (e) => {
-    setImageURL(e.target.value);
+    quill.on("text-change", function () {
+      const content = quill.root.innerHTML;
+      setFormData((prevState) => ({ ...prevState, content }));
+    });
+
+    return quill;
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const id = title.replace(/\s+/g, "-").toLowerCase();
+
+  // Add this useEffect hook
+  React.useEffect(() => {
+    initializeQuill();
+  }, []);
+  const navigate = useNavigate();
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const { title, content, topic, summary, imageURL } = formData;
+  
+    // Generate the ID based on the title
+    const id = title.trim().toLowerCase().replace(/\s+/g, '-');
+  
     const docData = {
       id,
       title,
@@ -23,16 +54,26 @@ const CreatePost = () => {
       topic,
       summary,
       createdAt: new Date(),
-      image: imageURL
+      image: imageURL,
     };
-    console.log('Submitting data: ', docData)
+  
+    console.log("Submitting data: ", docData);
+  
     try {
-      await addDoc(collection(db, "posts"), docData);
-      setTitle("");
-      setContent("");
-      alert("Post successfully created.");
+      await setDoc(doc(db, "posts", id), docData);
+      console.log("Data added to Firestore: ", docData);
+      setFormData({
+        title: "",
+        content: "",
+        topic: "",
+        summary: "",
+        imageURL: "",
+      });
       setSubmitStatus(true);
+      navigate(`/${topic.toLowerCase()}/${docData.id}`);
+      alert("Post successfully created.");
     } catch (error) {
+      console.log("Error: ", error);
       alert("Error creating post: " + error.message);
     }
   };
@@ -40,26 +81,33 @@ const CreatePost = () => {
   return (
     <div className="CreatePost">
       <h1>Create a Post</h1>
-      {submitStatus && <p>Post submitted successfully!</p>} {/* <-- Add this line */}
+      {submitStatus && <p>Post submitted successfully!</p>}
       <form onSubmit={handleSubmit}>
         <label htmlFor="image">Image URL:</label>
         <input
-        type="text"
-        id="imageUrl"
-        name="imageUrl"
-        value={imageURL}
-        onChange={handleImageUpload}
+          type="text"
+          id="imageUrl"
+          name="imageURL"
+          value={formData.imageURL}
+          onChange={handleInputChange}
         />
         <label>Title:</label>
         <input
           type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          name="title"
+          value={formData.title}
+          onChange={handleInputChange}
           required
         />
         <br />
         <label>Topic:</label>
-        <select value={topic} onChange={(e) => setTopic(e.target.value)}>
+        <select
+          name="topic"
+          value={formData.topic}
+          onChange={handleInputChange}
+          required
+        >
+          <option value="">Select a topic</option>
           <option value="AI Beginners">AI Beginners</option>
           <option value="AIAndMedia">AI and Media</option>
           <option value="AIAndGovernment">AI and Government</option>
@@ -69,21 +117,18 @@ const CreatePost = () => {
         <br />
         <label>Summary:</label>
         <textarea
-          value={summary}
-          onChange={(e) => setSummary(e.target.value)}
+          name="summary"
+          value={formData.summary}
+          onChange={handleInputChange}
           required
         />
         <label>Content:</label>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-        />
+        <div id="editor" />
         <br />
         <button type="submit">Submit</button>
       </form>
     </div>
   );
-};
+};  
 
 export default CreatePost;

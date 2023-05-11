@@ -7,6 +7,8 @@ import {
   getDoc,
   query,
   where,
+  updateDoc,
+  serverTimestamp, 
 } from 'firebase/firestore';
 
 // Create a reference to the Firestore collection you want to interact with
@@ -41,10 +43,10 @@ export const addPost = async (post) => {
 };
 
 // Function to retrieve all posts for a given topic
-export const getPostsForTopic = async (topicId) => {
+export const getPostsForTopic = async (topic) => {
   try {
     const posts = [];
-    const q = query(collection(db, 'posts'), where('topicId', '==', topicId));
+    const q = query(collection(db, 'posts'), where('topic', '==', topic));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       posts.push({ id: doc.id, ...doc.data() });
@@ -56,17 +58,16 @@ export const getPostsForTopic = async (topicId) => {
 };
 
 // Function to retrieve a single post by its ID
-export const getPostById = async (postId) => {
-  try {
-    const postDoc = await getDoc(doc(postsCollection, postId));
-    if (postDoc.exists()) {
-      return { id: postDoc.id, ...postDoc.data() };
-    }
-    throw new Error(`No post found with ID ${postId}`);
-  } catch (error) {
-    throw error;
+export async function getPostById(postId) {
+  const postRef = doc(db, 'posts', postId);
+  const postSnap = await getDoc(postRef);
+
+  if (postSnap.exists()) {
+    return { ...postSnap.data(), id: postSnap.id };
+  } else {
+    return null;
   }
-};
+}
 
 // Function to create a new post
 export const createPost = async (post) => {
@@ -77,4 +78,40 @@ export const createPost = async (post) => {
   } catch (error) {
     throw error;
   }
+};
+
+
+
+export const updatePost = async (postId, updatedPost) => {
+  try {
+    const postRef = doc(db, 'posts', postId);
+    const revisionsRef = collection(postRef, 'revisions');
+
+    await addDoc(revisionsRef, {
+      ...updatedPost,
+      updatedAt: serverTimestamp(),
+    });
+
+    await updateDoc(postRef, {
+      ...updatedPost,
+      updatedAt: serverTimestamp(),
+    });
+
+    return getPostById(postId);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getPostRevisions = async (postId) => {
+  const postRef = doc(db, 'posts', postId);
+  const revisionsRef = collection(postRef, 'revisions');
+  const revisionsSnap = await getDocs(revisionsRef);
+
+  const revisions = [];
+  revisionsSnap.forEach((doc) => {
+    revisions.push({ id: doc.id, ...doc.data() });
+  });
+
+  return revisions;
 };

@@ -1,27 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useAnalytics } from '../contexts/AnalyticsContext';
 
-const CookieConsent = () => {
-  const [consentGiven, setConsentGiven] = useState(false);
+const CookiesConsent = () => {
+  const { ga } = useAnalytics();
+  const location = useLocation();
+  const [isVisible, setIsVisible] = useState(false);
 
-  if (consentGiven) {
+  useEffect(() => {
+    const consentStatus = localStorage.getItem('cookiesConsent');
+    if (!consentStatus) {
+      setIsVisible(true);
+    }
+  }, []);
+
+  const handleAccept = () => {
+    ga('send', 'event', 'Cookies', 'Accept');
+    localStorage.setItem('cookiesConsent', 'accepted');
+    setIsVisible(false);
+  };
+
+  const handleDeny = () => {
+    ga('send', 'event', 'Cookies', 'Deny');
+    localStorage.setItem('cookiesConsent', 'denied');
+    setIsVisible(false);
+  };
+
+  if (!isVisible) {
     return null;
   }
 
-  const handleConsent = () => {
-    setConsentGiven(true);
-    // Save consent to localStorage or a cookie to persist across sessions
-    localStorage.setItem('cookieConsent', 'true');
-    // Enable additional tracking scripts or analytics here
-  };
-
   return (
-    <div className="cookie-consent-banner">
+    <div className="cookies-consent">
       <p>
-        This website uses cookies to enhance your user experience. By clicking "Accept," you consent to the use of cookies.
+        We use cookies to improve your experience on our website. By browsing this website, you agree to
+        our use of cookies.
       </p>
-      <button onClick={handleConsent}>Accept</button>
+      <button onClick={handleAccept}>Accept</button>
+      <button onClick={handleDeny}>Deny</button>
     </div>
   );
 };
 
-export default CookieConsent;
+export default CookiesConsent;

@@ -1,23 +1,16 @@
 import React, { useState } from "react";
-import { auth } from "C:/Users/drewv/Downloads/__pycache__/newBlogSite/ai-now/ai-now/src/components/firebase.js";
+import { auth } from "../components/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { validateEmail, validatePassword } from "./validation";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../components/firebase";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
-
-  const validateEmail = (email) => {
-    const re = /\S+@\S+\.\S+/;
-    return re.test(email);
-  };
-
-  const validatePassword = (password) => {
-    const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,}$/;
-    return re.test(password);
-  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -36,8 +29,18 @@ const Register = () => {
       return;
     }
 
+    // Firebase function to create a user in Firestore
+    const createUserInFirestore = async (email) => {
+      const userRef = doc(db, "users", email);
+      await setDoc(userRef, {
+        email: email,
+        account: true,
+      });
+    };
+
     try {
       await createUserWithEmailAndPassword(auth, email, password);
+      await createUserInFirestore(email); // Call the function after successful registration
       alert("User successfully registered!");
       navigate("/");
     } catch (error) {
