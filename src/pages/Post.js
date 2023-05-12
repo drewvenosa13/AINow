@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getPostById } from '../services/postsService';
 import { useAuth } from '../contexts/AuthContext';
+import '../App.css';
+import Chatbot from '../components/Chatbot';
 
 const Post = () => {
   const { postId } = useParams();
@@ -27,10 +29,11 @@ const Post = () => {
     <div>
       <h2>{post.title}</h2>
       <p>{post.summary}</p>
-      <p>{post.content}</p>
+      <Chatbot/>
+      <div className="post-content" dangerouslySetInnerHTML={{ __html: post.content }} />
       {post.updatedAt && <p>Last updated: {post.updatedAt.toLocaleString()}</p>}
       {currentUser && adminEmails.includes(currentUser.email) && (
-        <Link to={`/edit/${postId}`}>
+        <Link to={`/edit-post/${postId}`}>
           <button>Edit Post</button>
         </Link>
       )}

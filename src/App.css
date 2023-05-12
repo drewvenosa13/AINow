@@ -102,3 +102,7 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+.post-content {
+  text-align: left;
+}

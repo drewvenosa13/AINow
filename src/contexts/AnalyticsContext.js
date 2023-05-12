@@ -1,8 +1,7 @@
-import React, { useContext, createContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useContext, createContext, useState, useEffect } from 'react';
 import { logEvent } from 'firebase/analytics';
 import { analytics } from '../components/firebase';
-import { logPageTimeSpent } from '../services/firestoreService';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const AnalyticsContext = createContext();
 
@@ -11,26 +10,31 @@ export const useAnalytics = () => {
 };
 
 export const AnalyticsProvider = ({ children }) => {
-  const location = useLocation();
-  const [startTime, setStartTime] = useState(new Date());
+  const [userId, setUserId] = useState(null);
 
-  const uploadTimeSpentToFirestore = () => {
-    const endTime = new Date();
-    const timeSpent = endTime - startTime;
-    logEvent(analytics, 'time_spent', {
-      page_path: location.pathname,
-      time_spent: timeSpent
+  const auth = getAuth();
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserId(user.uid);
+      } else {
+        setUserId(null);
+      }
     });
-  };
 
-  const logPageView = () => {
-    logEvent(analytics, 'page_view', {
-      page_path: location.pathname
-    });
+    return () => {
+      unsubscribe();
+    };
+  }, [auth]);
+
+  const gtag = (event, action, parameters) => {
+    logEvent(analytics, event, { ...parameters, event_action: action });
   };
 
   return (
-    <AnalyticsContext.Provider value={{ uploadTimeSpentToFirestore, logPageView }}>
+    <AnalyticsContext.Provider
+      value={{ gtag }}
+    >
       {children}
     </AnalyticsContext.Provider>
   );
