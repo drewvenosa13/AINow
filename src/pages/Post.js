@@ -12,10 +12,15 @@ const Post = () => {
 
   useEffect(() => {
     const fetchPost = async () => {
-      const fetchedPost = await getPostById(postId);
-      setPost(fetchedPost);
+      try {
+        const fetchedPost = await getPostById(postId);
+        console.log('Fetched post:', fetchedPost);
+        setPost(fetchedPost);
+      } catch (error) {
+        console.error('Error fetching post:', error);
+      }
     };
-
+  
     fetchPost();
   }, [postId]);
 

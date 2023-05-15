@@ -29,12 +29,13 @@ export const getPosts = async () => {
 };
 
 // Function to add a new post
-export const addPost = async (post) => {
+export const addPost = async (post, questionsAnswers) => {
   try {
-    const docRef = await addDoc(postsCollection(db,'posts'), {
+    const docRef = await addDoc(postsCollection, {
       ...post,
       createdAt: new Date(),
-      id: post.title.replace(/\s+/g, '-').toLowerCase()
+      id: post.title.replace(/\s+/g, '-').toLowerCase(),
+      questionsAnswers: questionsAnswers
     });
     return docRef.id;
   } catch (error) {
