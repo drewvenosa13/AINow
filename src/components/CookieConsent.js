@@ -1,8 +1,11 @@
+// CookiesConsent.js
 import React, { useState, useEffect } from 'react';
 import { useAnalytics } from '../contexts/AnalyticsContext';
+import { doc, setDoc } from 'firebase/firestore'; 
+import { db } from '../components/firebase';
 
-const CookiesConsent = () => {
-  const { gtag } = useAnalytics();
+const CookieConsent = () => {
+  const { gtag, userId } = useAnalytics();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -12,16 +15,24 @@ const CookiesConsent = () => {
     }
   }, []);
 
-  const handleAccept = () => {
+  const handleAccept = async () => {
     gtag('event', 'Accept', { event_category: 'Cookies' });
     localStorage.setItem('cookiesConsent', 'accepted');
     setIsVisible(false);
+    if (userId) {
+      const docRef = doc(db, 'users', userId);
+      await setDoc(docRef, { cookiesAccepted: true }, { merge: true });
+    }
   };
 
-  const handleDeny = () => {
+  const handleDeny = async () => {
     gtag('event', 'Deny', { event_category: 'Cookies' });
     localStorage.setItem('cookiesConsent', 'denied');
     setIsVisible(false);
+    if (userId) {
+      const docRef = doc(db, 'users', userId);
+      await setDoc(docRef, { cookiesAccepted: false }, { merge: true });
+    }
   };
 
   return isVisible ? (
@@ -36,4 +47,4 @@ const CookiesConsent = () => {
   ) : null;
 };
 
-export default CookiesConsent;
+export default CookieConsent;

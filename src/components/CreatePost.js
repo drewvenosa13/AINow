@@ -13,7 +13,6 @@ const CreatePost = () => {
     summary: "",
     imageURL: "",
   });
-  const [submitStatus, setSubmitStatus] = useState(false);
   
   // Add this function after the useState declarations
   const initializeQuill = () => {
@@ -33,6 +32,7 @@ const CreatePost = () => {
   React.useEffect(() => {
     initializeQuill();
   }, []);
+
   const navigate = useNavigate();
 
   const handleInputChange = (event) => {
@@ -57,8 +57,6 @@ const CreatePost = () => {
       image: imageURL,
     };
   
-    console.log("Submitting data: ", docData);
-  
     try {
       await setDoc(doc(db, "posts", id), docData);
       console.log("Data added to Firestore: ", docData);
@@ -69,7 +67,6 @@ const CreatePost = () => {
         summary: "",
         imageURL: "",
       });
-      setSubmitStatus(true);
       navigate(`/${topic.toLowerCase()}/${docData.id}`);
       alert("Post successfully created.");
     } catch (error) {
@@ -81,7 +78,6 @@ const CreatePost = () => {
   return (
     <div className="CreatePost">
       <h1>Create a Post</h1>
-      {submitStatus && <p>Post submitted successfully!</p>}
       <form onSubmit={handleSubmit}>
         <label htmlFor="image">Image URL:</label>
         <input
@@ -107,12 +103,12 @@ const CreatePost = () => {
           onChange={handleInputChange}
           required
         >
-          <option value="">Select a topic</option>
-          <option value="AI Beginners">AI Beginners</option>
-          <option value="AIAndMedia">AI and Media</option>
-          <option value="AIAndGovernment">AI and Government</option>
-          <option value="AIAndBusiness">AI and Business</option>
-          <option value="News">News</option>
+          <option value="">Select topic</option>
+          <option value="news">News</option>
+          <option value="ai-for-beginners">AI For Beginners</option>
+          <option value="ai-and-government">AI And Government</option>
+          <option value="ai-and-business">AI And Business</option>
+          <option value="ai-and-media">AI and Media</option>
         </select>
         <br />
         <label>Summary:</label>
@@ -129,6 +125,6 @@ const CreatePost = () => {
       </form>
     </div>
   );
-};  
+};
 
-export default CreatePost;
+  export default CreatePost;  

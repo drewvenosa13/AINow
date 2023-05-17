@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import { getPostById } from '../services/postsService';
 import { useAuth } from '../contexts/AuthContext';
 import '../App.css';
-import Chatbot from '../components/Chatbot';
 
 const Post = () => {
   const { postId } = useParams();
@@ -34,9 +33,8 @@ const Post = () => {
     <div>
       <h2>{post.title}</h2>
       <p>{post.summary}</p>
-      <Chatbot/>
       <div className="post-content" dangerouslySetInnerHTML={{ __html: post.content }} />
-      {post.updatedAt && <p>Last updated: {post.updatedAt.toLocaleString()}</p>}
+      {post.updatedAt && <p>Last updated: {(new Date(post.updatedAt.seconds * 1000)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</p>}
       {currentUser && adminEmails.includes(currentUser.email) && (
         <Link to={`/edit-post/${postId}`}>
           <button>Edit Post</button>

@@ -1,3 +1,4 @@
+// analyticsContext.js
 import React, { useContext, createContext, useState, useEffect } from 'react';
 import { logEvent } from 'firebase/analytics';
 import { analytics } from '../components/firebase';
@@ -33,7 +34,7 @@ export const AnalyticsProvider = ({ children }) => {
 
   return (
     <AnalyticsContext.Provider
-      value={{ gtag }}
+      value={{ gtag, userId }} // provide user ID as well
     >
       {children}
     </AnalyticsContext.Provider>

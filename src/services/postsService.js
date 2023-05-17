@@ -17,8 +17,8 @@ const postsCollection = collection(db, 'posts');
 // Function to retrieve all posts
 export const getPosts = async () => {
   try {
-    const posts = [];
     const querySnapshot = await getDocs(postsCollection);
+    const posts = [];
     querySnapshot.forEach((doc) => {
       posts.push({ id: doc.id, ...doc.data() });
     });
@@ -44,11 +44,11 @@ export const addPost = async (post, questionsAnswers) => {
 };
 
 // Function to retrieve all posts for a given topic
-export const getPostsForTopic = async (topic) => {
+export const getPostsByTopic = async (topicName) => {
   try {
-    const posts = [];
-    const q = query(collection(db, 'posts'), where('topic', '==', topic));
+    const q = query(postsCollection, where("topic", "==", topicName));
     const querySnapshot = await getDocs(q);
+    const posts = [];
     querySnapshot.forEach((doc) => {
       posts.push({ id: doc.id, ...doc.data() });
     });
@@ -59,16 +59,18 @@ export const getPostsForTopic = async (topic) => {
 };
 
 // Function to retrieve a single post by its ID
-export async function getPostById(postId) {
-  const postRef = doc(db, 'posts', postId);
-  const postSnap = await getDoc(postRef);
-
-  if (postSnap.exists()) {
-    return { ...postSnap.data(), id: postSnap.id };
-  } else {
-    return null;
+// Function to retrieve a single post by its ID
+export const getPostById = async (postId) => {
+  try {
+    const postDoc = await getDoc(doc(postsCollection, postId));
+    if (postDoc.exists()) {
+      return { id: postDoc.id, ...postDoc.data() };
+    }
+    throw new Error(`No post found with ID ${postId}`);
+  } catch (error) {
+    throw error;
   }
-}
+};
 
 // Function to create a new post
 export const createPost = async (post) => {

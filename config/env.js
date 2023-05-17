@@ -103,5 +103,3 @@ function getClientEnvironment(publicUrl) {
 
 module.exports = getClientEnvironment;
 
-console.log("REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID:", process.env.REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID);
-console.log("REACT_APP_FIREBASE_CONFIG:", process.env.REACT_APP_FIREBASE_CONFIG);

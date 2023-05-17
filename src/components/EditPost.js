@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPostById, updatePost } from '../services/postsService';
 import Quill from 'quill';
@@ -6,6 +6,7 @@ import './CreatePost.css'
 import 'quill/dist/quill.snow.css'
 
 const EditPost = () => {
+  const navigate = useNavigate();
   const { postId } = useParams();
   const [post, setPost] = useState(null);
   const [title, setTitle] = useState('');
@@ -13,30 +14,30 @@ const EditPost = () => {
   const [content, setContent] = useState('');
   const [image, setImage] = useState('');
   const [topic, setTopic] = useState('');
+  const quillRef = useRef(null);
   
-  // Add this function after the useState declarations
   const initializeQuill = () => {
-    const quill = new Quill("#editor", {
-      theme: "snow",
-    });
-
-    quill.setContents(quill.clipboard.convert(content));
-
-    quill.on("text-change", function () {
-      const content = quill.root.innerHTML;
-      setContent(content);
-    });
-
-    return quill;
+    if (quillRef.current === null) {
+      quillRef.current = new Quill("#editor", {
+        theme: "snow",
+      });
+      quillRef.current.on("text-change", function () {
+        const content = quillRef.current.root.innerHTML;
+        setContent(content);
+      });
+    }
   };
 
-  // Add this useEffect hook
   useEffect(() => {
-    if (content) {
-      initializeQuill();
+    initializeQuill();
+  }, []); 
+
+  useEffect(() => {
+    if (content && quillRef.current != null) {
+      const delta = quillRef.current.clipboard.convert(content);
+      quillRef.current.setContents(delta, 'silent');
     }
   }, [content]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -46,9 +47,8 @@ const EditPost = () => {
       setSummary(fetchedPost.summary);
       setContent(fetchedPost.content);
       setImage(fetchedPost.image);
-      setTopic(fetchedPost.topic); // Set topic state variable
+      setTopic(fetchedPost.topic);
     };
-
     fetchPost();
   }, [postId]);
 
@@ -63,10 +63,14 @@ const EditPost = () => {
       image,
     };
 
-    await updatePost(postId, updatedPost);
-    navigate(`/${topic.toLowerCase()}/${postId}`);
+    try {
+      await updatePost(postId, updatedPost);
+      navigate(`/${topic.toLowerCase()}/${postId}`);
+    } catch (error) {
+      console.log(error);
+    }
   };
-  
+
   return (
     <div>
       <h2>Edit Post</h2>
@@ -91,7 +95,6 @@ const EditPost = () => {
         </div>
         <div>
           <label htmlFor="content">Content</label>
-          {/* Replace the <textarea> element with this <div> */}
           <div id="editor" />
         </div>
         <div>
@@ -108,5 +111,5 @@ const EditPost = () => {
     </div>
   );
 };
-  export default EditPost;
-  
+
+export default EditPost;
