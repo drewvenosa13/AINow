@@ -3,15 +3,15 @@ import ArticleCard from '../../components/ArticleCard.js';
 import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
 import { db } from '../../components/firebase.js';
 
-const AIAndBusiness = () => {
+const AIAndEthics = () => {
   const [newsArticles, setNewsArticles] = useState([]);
   const [educationArticles, setEducationArticles] = useState([]);
   const [currentIntent, setCurrentIntent] = useState('News'); // Default is News
 
   useEffect(() => {
     const articlesRef = collection(db, 'posts');
-    const newsQuery = query(articlesRef, where("topic", "==", "business"), where("intent", "==", "News"), orderBy('createdAt', 'desc'));
-    const educationQuery = query(articlesRef, where("topic", "==", "business"), where("intent", "==", "Education"), orderBy('createdAt', 'desc'));
+    const newsQuery = query(articlesRef, where("topic", "==", "ethics"), where("intent", "==", "News"), orderBy('createdAt', 'desc'));
+    const educationQuery = query(articlesRef, where("topic", "==", "ethics"), where("intent", "==", "Education"), orderBy('createdAt', 'desc'));
 
     onSnapshot(newsQuery, (snapshot) => {
       const articlesData = [];
@@ -35,9 +35,9 @@ const AIAndBusiness = () => {
   }
 
   return (
-    <div className="business-page">
-      <h1>AI and Business</h1>
-      <p> Discussing the Implications of AI in Business </p>
+    <div className="ethics-page">
+      <h1>AI and Ethics</h1>
+      <p> Discussing the Implications of AI in Ethics </p>
 
       <div>
         <select onChange={handleIntentChange} value={currentIntent}>
@@ -71,4 +71,4 @@ const AIAndBusiness = () => {
   );
 };
 
-export default AIAndBusiness;
+export default AIAndEthics;

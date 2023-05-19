@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { collection, addDoc, setDoc, doc } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { db } from "../components/firebase";
 import { useNavigate } from "react-router-dom";
 import Quill from "quill";
@@ -12,6 +12,7 @@ const CreatePost = () => {
     topic: "",
     summary: "",
     imageURL: "",
+    intent: "News",
   });
   
   // Add this function after the useState declarations
@@ -42,10 +43,10 @@ const CreatePost = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const { title, content, topic, summary, imageURL } = formData;
+    const { title, content, topic, summary, imageURL, intent } = formData;
   
     // Generate the ID based on the title
-    const id = title.trim().toLowerCase().replace(/\s+/g, '-');
+    const id = title.toLowerCase().replace(/ /g, "-");  
   
     const docData = {
       id,
@@ -53,7 +54,8 @@ const CreatePost = () => {
       content,
       topic,
       summary,
-      createdAt: new Date(),
+      intent,
+      createdAt: serverTimestamp(),
       image: imageURL,
     };
   
@@ -104,13 +106,25 @@ const CreatePost = () => {
           required
         >
           <option value="">Select topic</option>
-          <option value="news">News</option>
-          <option value="ai-for-beginners">AI For Beginners</option>
-          <option value="ai-and-government">AI And Government</option>
-          <option value="ai-and-business">AI And Business</option>
-          <option value="ai-and-media">AI and Media</option>
+          <option value="ethics">Ethics</option>
+          <option value="cybersecurity">Cybersecurity</option>
+          <option value="healthcare">Healthcare</option>
+          <option value="beginners">Beginners</option>
+          <option value="government">Government</option>
+          <option value="business">Business</option>
+          <option value="media">Media</option>
         </select>
         <br />
+        <label>Intent:</label>
+<select
+  name="intent"
+  value={formData.intent}
+  onChange={handleInputChange}
+  required
+>
+  <option value="News">News</option>
+  <option value="Education">Education</option>
+</select>
         <label>Summary:</label>
         <textarea
           name="summary"
@@ -126,5 +140,4 @@ const CreatePost = () => {
     </div>
   );
 };
-
   export default CreatePost;  

@@ -5,11 +5,13 @@ import {
   addDoc,
   doc,
   getDoc,
+  deleteDoc,
   query,
   where,
   updateDoc,
   serverTimestamp, 
 } from 'firebase/firestore';
+import axios from 'axios';
 
 // Create a reference to the Firestore collection you want to interact with
 const postsCollection = collection(db, 'posts');
@@ -29,13 +31,18 @@ export const getPosts = async () => {
 };
 
 // Function to add a new post
-export const addPost = async (post, questionsAnswers) => {
+export const addPost = async (post) => {
   try {
+    // Generate questions and answers based on post content
+    const response = await axios.post('/api/generate-questions-answers', { postContent: post.content });
+
+    const questionsAnswers = response.data;
+
     const docRef = await addDoc(postsCollection, {
       ...post,
-      createdAt: new Date(),
+      createdAt: serverTimestamp(),
       id: post.title.replace(/\s+/g, '-').toLowerCase(),
-      questionsAnswers: questionsAnswers
+      questionsAnswers: questionsAnswers, // include the generated questions and answers
     });
     return docRef.id;
   } catch (error) {
@@ -59,7 +66,6 @@ export const getPostsByTopic = async (topicName) => {
 };
 
 // Function to retrieve a single post by its ID
-// Function to retrieve a single post by its ID
 export const getPostById = async (postId) => {
   try {
     const postDoc = await getDoc(doc(postsCollection, postId));
@@ -75,7 +81,16 @@ export const getPostById = async (postId) => {
 // Function to create a new post
 export const createPost = async (post) => {
   try {
-    const docRef = await addDoc(postsCollection, post);
+    // Generate questions and answers based on post content
+    const response = await axios.post('/api/generate-questions-answers', { postContent: post.content });
+
+    const questionsAnswers = response.data;
+
+    const docRef = await addDoc(postsCollection, {
+      ...post,
+      questionsAnswers: questionsAnswers, // include the generated questions and answers
+    });
+
     const docSnapshot = await getDoc(docRef);
     return { id: docSnapshot.id, ...docSnapshot.data() };
   } catch (error) {
@@ -117,4 +132,9 @@ export const getPostRevisions = async (postId) => {
   });
 
   return revisions;
+};
+
+export const deletePost = async (id) => {
+  const postRef = doc(db, 'posts', id);
+  await deleteDoc(postRef);
 };

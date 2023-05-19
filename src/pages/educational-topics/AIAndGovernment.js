@@ -1,36 +1,72 @@
 import React, { useEffect, useState } from 'react';
 import ArticleCard from '../../components/ArticleCard.js';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
 import { db } from '../../components/firebase.js';
 
 const AIAndGovernment = () => {
-  const [articles, setArticles] = useState([]);
+  const [newsArticles, setNewsArticles] = useState([]);
+  const [educationArticles, setEducationArticles] = useState([]);
+  const [currentIntent, setCurrentIntent] = useState('News'); // Default is News
 
   useEffect(() => {
-    // Fetch articles from Firebase
     const articlesRef = collection(db, 'posts');
-    const q = query(articlesRef, where("topic", "==", "ai-and-government"));
+    const newsQuery = query(articlesRef, where("topic", "==", "government"), where("intent", "==", "News"), orderBy('createdAt', 'desc'));
+    const educationQuery = query(articlesRef, where("topic", "==", "government"), where("intent", "==", "Education"), orderBy('createdAt', 'desc'));
 
-    onSnapshot(q, (snapshot) => {
+    onSnapshot(newsQuery, (snapshot) => {
       const articlesData = [];
       snapshot.forEach((doc) => {
         articlesData.push({ ...doc.data(), id: doc.id });
       });
-      // Sort articles by date (newest first)
-      articlesData.sort((a, b) => b.date - a.date);
-      setArticles(articlesData);
+      setNewsArticles(articlesData);
+    });
+
+    onSnapshot(educationQuery, (snapshot) => {
+      const articlesData = [];
+      snapshot.forEach((doc) => {
+        articlesData.push({ ...doc.data(), id: doc.id });
+      });
+      setEducationArticles(articlesData);
     });
   }, []);
 
+  const handleIntentChange = (event) => {
+    setCurrentIntent(event.target.value);
+  }
+
   return (
-    <div className="ai-government-page">
-      <h1>AI And Government</h1>
-      <p>Articles and resources about the dirty fuckin government. </p>
-      <div className="article-grid">
-        {articles.map((article) => (
-          <ArticleCard key={article.id} {...article} />
-        ))}
+    <div className="government-page">
+      <h1>AI and Government</h1>
+      <p> Discussing the Implications of AI in Government </p>
+
+      <div>
+        <select onChange={handleIntentChange} value={currentIntent}>
+          <option value="News">News</option>
+          <option value="Education">Education</option>
+        </select>
       </div>
+      
+      {currentIntent === 'News' && (
+        <div>
+          <h2>News</h2>
+          <div className="article-grid">
+            {newsArticles.map((article) => (
+              <ArticleCard key={article.id} {...article} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {currentIntent === 'Education' && (
+        <div>
+          <h2>Education</h2>
+          <div className="article-grid">
+            {educationArticles.map((article) => (
+              <ArticleCard key={article.id} {...article} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

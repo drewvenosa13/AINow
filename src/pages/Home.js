@@ -10,11 +10,7 @@ const Home = () => {
       </div>
       <div className="news-section">
         <h2>Latest News</h2>
-        <div className="news-row">
-          <NewsPreview />
-          <NewsPreview />
-          <NewsPreview />
-        </div>
+        <NewsPreview />
         <div className="view-all-news">
           <Link to="/news">View All News</Link>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import logo from "./logo.svg";
 import "./header.css";
 import { useAuth } from "../contexts/AuthContext";
@@ -14,6 +14,8 @@ const Header = () => {
   const toggleTopics = () => {
     setShowTopics(!showTopics);
   };
+
+  const location = useLocation();
 
   return (
     <nav className="navbar">
@@ -40,43 +42,68 @@ const Header = () => {
       )}
       <NavLink
         to="/news"
-        className="nav-link"
+        className={`nav-link ${location.pathname === "/news" ? "active" : ""}`}
         activeClassName="nav-link-active"
       >
-        News
+        {location.pathname === "/news" ? "News (Active)" : "News"}
+      </NavLink>
+      <NavLink
+        to="/ai-for-beginners"
+        className={`nav-link ${
+          location.pathname === "/ai-for-beginners" ? "active" : ""
+        }`}
+        activeClassName="nav-link-active"
+      >
+        {location.pathname === "/ai-for-beginners"
+          ? "AI for Beginners (Active)"
+          : "AI for Beginners"}
       </NavLink>
       <div className="nav-link" onClick={toggleTopics}>
-        Topics
+        AI and...
         {showTopics && (
           <div className="topics-dropdown">
             <NavLink
-              to="/ai-for-beginners"
+              to="/government"
               className="dropdown-item"
               activeClassName="nav-link-active"
             >
-              AI for Beginners
+              Government
             </NavLink>
             <NavLink
-              to="/ai-and-government"
+              to="/business"
               className="dropdown-item"
               activeClassName="nav-link-active"
             >
-              AI and Government
+              Business
             </NavLink>
             <NavLink
-              to="/ai-and-business"
+              to="/media"
               className="dropdown-item"
               activeClassName="nav-link-active"
             >
-              AI and Business
+              Media
             </NavLink>
             <NavLink
-              to="/ai-and-media"
-              className="dropdown-item"
-              activeClassName="nav-link-active"
-            >
-              AI and Media
-            </NavLink>
+        to="/ethics"
+        className="dropdown-item"
+        activeClassName="nav-link-active"
+      >
+        Ethics
+      </NavLink>
+      <NavLink
+        to="/cybersecurity"
+        className="dropdown-item"
+        activeClassName="nav-link-active"
+      >
+        Cybersecurity
+      </NavLink>
+      <NavLink
+        to="/healthcare"
+        className="dropdown-item"
+        activeClassName="nav-link-active"
+      >
+        Healthcare
+      </NavLink>
           </div>
         )}
       </div>

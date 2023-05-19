@@ -44,10 +44,10 @@ const EditPost = () => {
       const fetchedPost = await getPostById(postId);
       setPost(fetchedPost);
       setTitle(fetchedPost.title);
-      setSummary(fetchedPost.summary);
       setContent(fetchedPost.content);
       setImage(fetchedPost.image);
       setTopic(fetchedPost.topic);
+      setSummary(fetchedPost.summary);
     };
     fetchPost();
   }, [postId]);
