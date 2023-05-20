@@ -1,6 +1,19 @@
+.App-header {
+  background-image: linear-gradient(120deg, #0072ff, #00c6ff);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
 .App {
   text-align: center;
-}
+  font-family: 'Courier New', monospace; /* This will give a more techy feel */
+  background-color: #0b132b; /* Dark blue background color */
+  color: #ffffff; /* White color for the text */
 
 .App-logo {
   height: 40vmin;
@@ -13,15 +26,6 @@
   }
 }
 
-.App-header {
-  background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
 .App-link {
@@ -52,16 +56,14 @@
 }
 
 .article-card {
-  border: 1px solid #ccc;
-  padding: 16px;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s;
+  border: 1px solid #61dafb; /* Blue border */
+  background-color: #1c2541; /* Dark blue background */
+  color: #ffffff; /* White color text */
+  box-shadow: 0px 10px 20px #00000029; /* Box shadow for a sleek look */
 }
 
 .article-card:hover {
-  transform: translateY(-5px);
+  border: 1px solid #3aa7db; /* Change border color on hover */
 }
 
 .article-card img {

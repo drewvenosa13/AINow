@@ -42,26 +42,27 @@ const Header = () => {
       )}
       <NavLink
         to="/news"
-        className={`nav-link ${location.pathname === "/news" ? "active" : ""}`}
-        activeClassName="nav-link-active"
+        className={`nav-link ${location.pathname === "/news" ? "nav-link-active" : ""}`}
       >
-        {location.pathname === "/news" ? "News (Active)" : "News"}
+        News
       </NavLink>
       <NavLink
         to="/ai-for-beginners"
         className={`nav-link ${
-          location.pathname === "/ai-for-beginners" ? "active" : ""
+          location.pathname === "/ai-for-beginners" ? "nav-link-active" : ""
         }`}
-        activeClassName="nav-link-active"
       >
-        {location.pathname === "/ai-for-beginners"
-          ? "AI for Beginners (Active)"
-          : "AI for Beginners"}
+        AI for Beginners
       </NavLink>
-      <div className="nav-link" onClick={toggleTopics}>
-        AI and...
-        {showTopics && (
-          <div className="topics-dropdown">
+      <div className="dropdown-container">
+        <NavLink
+        to='#'
+        className="nav-link"
+        activeClassName="nav-link-active"
+        >
+        Topics
+        </NavLink>
+        <div className="topics-dropdown">
             <NavLink
               to="/government"
               className="dropdown-item"
@@ -84,28 +85,27 @@ const Header = () => {
               Media
             </NavLink>
             <NavLink
-        to="/ethics"
-        className="dropdown-item"
-        activeClassName="nav-link-active"
-      >
-        Ethics
-      </NavLink>
-      <NavLink
-        to="/cybersecurity"
-        className="dropdown-item"
-        activeClassName="nav-link-active"
-      >
-        Cybersecurity
-      </NavLink>
-      <NavLink
-        to="/healthcare"
-        className="dropdown-item"
-        activeClassName="nav-link-active"
-      >
-        Healthcare
-      </NavLink>
-          </div>
-        )}
+              to="/ethics"
+              className="dropdown-item"
+              activeClassName="nav-link-active"
+            >
+              Ethics
+            </NavLink>
+            <NavLink
+              to="/cybersecurity"
+              className="dropdown-item"
+              activeClassName="nav-link-active"
+            >
+              Cybersecurity
+            </NavLink>
+            <NavLink
+              to="/healthcare"
+              className="dropdown-item"
+              activeClassName="nav-link-active"
+            >
+              Healthcare
+            </NavLink>
+        </div>
       </div>
       {isAuthorizedUser && (
         <NavLink
@@ -130,5 +130,6 @@ const Header = () => {
     </nav>
   );
 };
+
 
 export default Header;
