@@ -11,7 +11,7 @@ import {
   updateDoc,
   serverTimestamp, 
 } from 'firebase/firestore';
-import axios from 'axios';
+import axios from '../axiosConfig';
 
 // Create a reference to the Firestore collection you want to interact with
 const postsCollection = collection(db, 'posts');

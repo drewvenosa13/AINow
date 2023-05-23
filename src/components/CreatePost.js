@@ -4,6 +4,8 @@ import { db } from "../components/firebase";
 import { useNavigate } from "react-router-dom";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
+import axios from "../axiosConfig";
+
 
 const CreatePost = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +16,7 @@ const CreatePost = () => {
     imageURL: "",
     intent: "News",
   });
-  
+  const [questionsAnswers, setQuestionsAnswers] = useState([]);
   // Add this function after the useState declarations
   const initializeQuill = () => {
     const quill = new Quill("#editor", {
@@ -41,6 +43,33 @@ const CreatePost = () => {
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
+  const handleSetContent = async () => {
+    try {
+      const response = await axios.post('/api/set-content', { content: formData.content });
+      if (response.data.success) {
+        console.log("Content successfully sent to server.");
+      }
+    } catch (error) {
+      console.error('Error sending content to server:', error);
+    }
+}
+
+// Replace handleGenerate with the following:
+const handleGenerate = async () => {
+    try {
+      const response = await axios.post('/api/generate-questions-answers', {});
+      setQuestionsAnswers(response.data);
+    } catch (error) {
+      console.error('Error generating questions and answers:', error);
+    }
+}
+
+  const handleQuestionsAnswersChange = (index, field, value) => {
+    const updatedQuestionsAnswers = [...questionsAnswers];
+    updatedQuestionsAnswers[index][field] = value;
+    setQuestionsAnswers(updatedQuestionsAnswers);
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const { title, content, topic, summary, imageURL, intent } = formData;
@@ -57,6 +86,7 @@ const CreatePost = () => {
       intent,
       createdAt: serverTimestamp(),
       image: imageURL,
+      questionsAnswers,
     };
   
     try {
@@ -116,15 +146,15 @@ const CreatePost = () => {
         </select>
         <br />
         <label>Intent:</label>
-<select
-  name="intent"
-  value={formData.intent}
-  onChange={handleInputChange}
-  required
->
-  <option value="News">News</option>
-  <option value="Education">Education</option>
-</select>
+          <select
+            name="intent"
+            value={formData.intent}
+            onChange={handleInputChange}
+            required
+          >
+          <option value="News">News</option>
+          <option value="Education">Education</option>
+          </select>
         <label>Summary:</label>
         <textarea
           name="summary"
@@ -134,10 +164,30 @@ const CreatePost = () => {
         />
         <label>Content:</label>
         <div id="editor" />
-        <br />
+        <button type="button" onClick={handleSetContent}>Set Content</button>
+        <button type="button" onClick={handleGenerate}>Generate</button>
+
+        {questionsAnswers && questionsAnswers.map((item, index) => (
+          <div key={index}>
+            <label>Question {index+1}:</label>
+            <input
+              type="text"
+              value={item.question}
+              onChange={(e) => handleQuestionsAnswersChange(index, 'question', e.target.value)}
+            />
+            <label>Answer {index+1}:</label>
+            <input
+              type="text"
+              value={item.answer}
+              onChange={(e) => handleQuestionsAnswersChange(index, 'answer', e.target.value)}
+            />
+          </div>
+        ))}
+
         <button type="submit">Submit</button>
       </form>
     </div>
   );
 };
-  export default CreatePost;  
+
+  export default CreatePost;

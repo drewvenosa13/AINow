@@ -51,7 +51,7 @@ const Post = () => {
       {updatedAtString ? <p>Last updated: {updatedAtString}</p> : <p>Created at: {createdAtString}</p>}
       <p>{post.summary}</p>
       <div className="post-content" dangerouslySetInnerHTML={{ __html: post.content }} />
-      <Chatbot />
+      {/* <Chatbot /> */}
       {currentUser && adminEmails.includes(currentUser.email) && (
   <>
     <Link to={`/edit-post/${postId}`}>

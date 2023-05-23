@@ -1,27 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import axios from '../axiosConfig';
 import './Chatbot.css';
 
-const Chatbot = ({ postContent }) => {
+const Chatbot = ({ postContent, questionsAnswers }) => {
+  const preGeneratedQuestions = questionsAnswers.map(item => item.question);
+  const preGeneratedAnswers = questionsAnswers.map(item => item.answer);
   const [userQuestion, setUserQuestion] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
-  const [preGeneratedQuestions, setPreGeneratedQuestions] = useState([]);
-  const [preGeneratedAnswers, setPreGeneratedAnswers] = useState([]);
-
-  useEffect(() => {
-    const fetchPreGeneratedQuestions = async () => {
-      try {
-        const response = await axios.post('/api/generate-questions-answers', {
-          postContent,
-        });
-        setPreGeneratedQuestions(response.data);
-      } catch (error) {
-        console.error('Error fetching pre-generated questions:', error);
-      }
-    };
-
-    fetchPreGeneratedQuestions();
-  }, [postContent]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
