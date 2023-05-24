@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ArticleCard from '../components/ArticleCard';
 import { collection, onSnapshot, orderBy } from 'firebase/firestore';
-import { db } from '../components/firebase';
+import { db } from '../firebase/firebase';
 import { query, where } from 'firebase/firestore';
 
 const News = () => {

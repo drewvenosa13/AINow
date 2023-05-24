@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ArticleCard from '../components/ArticleCard.js';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
-import { db } from '../components/firebase.js';
+import { db } from '../firebase/firebase.js';
 
 const AIBeginners = () => {
   const [articles, setArticles] = useState([]);

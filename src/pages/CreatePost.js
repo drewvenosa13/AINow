@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { collection, addDoc, setDoc, doc, serverTimestamp } from "firebase/firestore";
-import { db } from "../components/firebase";
+import { db } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";

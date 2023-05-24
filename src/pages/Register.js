@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { auth } from "../components/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { validateEmail, validatePassword } from "./validation";
+import { validateEmail, validatePassword } from "../components/validation";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../components/firebase";
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ArticleCard from '../../components/ArticleCard.js';
 import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
-import { db } from '../../components/firebase.js';
+import { db } from '../../firebase/firebase.js';
 
 const AIAndGovernment = () => {
   const [newsArticles, setNewsArticles] = useState([]);

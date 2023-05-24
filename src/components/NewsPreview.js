@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { collection, onSnapshot, query, where, orderBy, limit } from 'firebase/firestore';
-import { db } from './firebase';
+import { db } from '../firebase/firebase';
 import ArticleCard from './ArticleCard';
 
 const NewsPreview = () => {
