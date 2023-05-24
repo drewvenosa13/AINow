@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getPostById, updatePost } from '../services/postsService';
+import { getPostById, updatePost } from '../../firebase/services/postsService';
 import Quill from 'quill';
 import './CreatePost.css'
 import 'quill/dist/quill.snow.css'

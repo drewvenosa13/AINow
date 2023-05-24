@@ -1,5 +1,5 @@
 import { collection, addDoc, serverTimestamp, Timestamp, query, where, getDocs, doc, setDoc, increment } from 'firebase/firestore';
-import { db } from '../components/firebase';
+import { db } from '../firebase';
 
 const pageviewsCollection = collection(db, 'pageviews');
 

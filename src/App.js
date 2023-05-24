@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import Header from './components/header';
 import AppRoutes from './components/Routes';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider } from './firebase/contexts/AuthContext';
 import './App.css';
-import { AnalyticsProvider, useAnalytics } from './contexts/AnalyticsContext';
+import { AnalyticsProvider, useAnalytics } from './firebase/contexts/AnalyticsContext';
 import axios from './axiosConfig';
 
 const PageWrapper = ({ children }) => {

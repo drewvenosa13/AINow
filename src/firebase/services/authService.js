@@ -1,5 +1,4 @@
-import { auth } from '../components/firebase';
-
+import { auth } from '../firebase/firebase';
 export const registerUser = async (email, password) => {
   try {
     const userCredential = await auth.createUserWithEmailAndPassword(email, password);

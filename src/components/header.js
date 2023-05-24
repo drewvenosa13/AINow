@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import logo from "./logo.svg";
 import "./header.css";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../firebase/contexts/AuthContext";
+import  topics  from "../pages/topics";
 
 const Header = () => {
   const [showTopics, setShowTopics] = useState(false);
@@ -27,14 +28,14 @@ const Header = () => {
           <NavLink
             to="/login"
             className="nav-link"
-            activeClassName="nav-link-active"
+            activeclassname="nav-link-active"
           >
             Login
           </NavLink>
           <NavLink
             to="/register"
             className="nav-link"
-            activeClassName="nav-link-active"
+            activeclassname="nav-link-active"
           >
             Register
           </NavLink>
@@ -47,71 +48,39 @@ const Header = () => {
         News
       </NavLink>
       <NavLink
-        to="/ai-for-beginners"
+        to="/education"
         className={`nav-link ${
-          location.pathname === "/ai-for-beginners" ? "nav-link-active" : ""
+          location.pathname === "/ai-education" ? "nav-link-active" : ""
         }`}
       >
-        AI for Beginners
+        Education
       </NavLink>
       <div className="dropdown-container">
         <NavLink
-        to='#'
-        className="nav-link"
-        activeClassName="nav-link-active"
+          to='#'
+          className="nav-link"
+          activeclassname="nav-link-active"
         >
-        Topics
+          Topics
         </NavLink>
         <div className="topics-dropdown">
+          {topics.map((topic) => (
             <NavLink
-              to="/government"
+              key={topic.name}
+              to={`/${topic.name}`}
               className="dropdown-item"
-              activeClassName="nav-link-active"
+              activeclassname="nav-link-active"
             >
-              Government
+              {topic.title}
             </NavLink>
-            <NavLink
-              to="/business"
-              className="dropdown-item"
-              activeClassName="nav-link-active"
-            >
-              Business
-            </NavLink>
-            <NavLink
-              to="/media"
-              className="dropdown-item"
-              activeClassName="nav-link-active"
-            >
-              Media
-            </NavLink>
-            <NavLink
-              to="/ethics"
-              className="dropdown-item"
-              activeClassName="nav-link-active"
-            >
-              Ethics
-            </NavLink>
-            <NavLink
-              to="/cybersecurity"
-              className="dropdown-item"
-              activeClassName="nav-link-active"
-            >
-              Cybersecurity
-            </NavLink>
-            <NavLink
-              to="/healthcare"
-              className="dropdown-item"
-              activeClassName="nav-link-active"
-            >
-              Healthcare
-            </NavLink>
+          ))}
         </div>
       </div>
       {isAuthorizedUser && (
         <NavLink
           to="/create-post"
           className="nav-link"
-          activeClassName="nav-link-active"
+          activeclassname="nav-link-active"
         >
           Create Post
         </NavLink>
@@ -121,7 +90,7 @@ const Header = () => {
           <NavLink
             to="/profile"
             className="nav-link"
-            activeClassName="nav-link-active"
+            activeclassname="nav-link-active"
           >
             Profile
           </NavLink>

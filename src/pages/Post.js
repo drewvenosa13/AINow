@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getPostById, deletePost } from '../services/postsService';
-import { useAuth } from '../contexts/AuthContext';
+import { getPostById, deletePost } from '../firebase/services/postsService';
+import { useAuth } from '../firebase/contexts/AuthContext';
 import '../App.css';
 import Chatbot from '../components/Chatbot';
 

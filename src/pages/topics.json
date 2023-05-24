@@ -1,0 +1,38 @@
+[
+    {
+    "title": "AI and Government",
+    "webcopy": "This page includes stories about AI and Government",
+    "url": "ai-and-government",
+    "name":"government"
+    },
+    {
+    "title": "AI and Business",
+    "webcopy": "This page includes stories about AI and Business",
+    "url": "ai-and-business",
+    "name":"business"
+    },
+    {
+    "title": "AI and Healthcare",
+    "webcopy": "This page includes stories about AI and Healthcare",
+    "url": "ai-and-healthcare",
+    "name":"healthcare"
+    },
+    {
+    "title":"AI and Ethics",
+    "webcopy": "This page includes stories about AI and Ethics",
+    "url": "ai-and-ethics",
+    "name":"ethics"
+    },
+    {
+    "title":"AI and Cybersecurity",
+    "webcopy": "This page includes stories about AI and Cybersecurity",
+    "url"   : "ai-and-cybersecurity",
+    "name":"cybersecurity"
+    },
+    {
+    "title": "AI and Media",
+    "webcopy": "This page includes stories about AI and Media",
+    "url": "ai-and-media",
+    "name":"media"
+    }
+]

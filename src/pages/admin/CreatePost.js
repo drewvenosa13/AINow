@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { collection, addDoc, setDoc, doc, serverTimestamp } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { db, auth } from "../../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
-import axios from "../axiosConfig";
-
+import axios from "../../axiosConfig";
+import topics from '../topics.json';
 
 const CreatePost = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +17,19 @@ const CreatePost = () => {
     intent: "News",
   });
   const [questionsAnswers, setQuestionsAnswers] = useState([]);
-  // Add this function after the useState declarations
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user && process.env.REACT_APP_ADMIN_EMAILS.split(',').includes(user.email)) {
+        // User is signed in and is an admin
+      } else {
+        // User is not signed in or not an admin, redirect to home
+        navigate("/");
+      }
+    });
+  }, [navigate]);
+
   const initializeQuill = () => {
     const quill = new Quill("#editor", {
       theme: "snow",
@@ -32,11 +44,9 @@ const CreatePost = () => {
   };
 
   // Add this useEffect hook
-  React.useEffect(() => {
+  useEffect(() => {
     initializeQuill();
   }, []);
-
-  const navigate = useNavigate();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -129,21 +139,19 @@ const handleGenerate = async () => {
         />
         <br />
         <label>Topic:</label>
-        <select
-          name="topic"
-          value={formData.topic}
-          onChange={handleInputChange}
-          required
-        >
-          <option value="">Select topic</option>
-          <option value="ethics">Ethics</option>
-          <option value="cybersecurity">Cybersecurity</option>
-          <option value="healthcare">Healthcare</option>
-          <option value="beginners">Beginners</option>
-          <option value="government">Government</option>
-          <option value="business">Business</option>
-          <option value="media">Media</option>
-        </select>
+      <select
+        name="topic"
+        value={formData.topic}
+        onChange={handleInputChange}
+        required
+      >
+        <option value="">Select topic</option>
+        {topics.map((topic) => (
+          <option key={topic.name} value={topic.name}>
+            {topic.title}
+          </option>
+        ))}
+      </select>
         <br />
         <label>Intent:</label>
           <select
