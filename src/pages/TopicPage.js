@@ -12,10 +12,8 @@ export const TopicPageWrapper = (props) => {
   // Find the topic details in your topics array
   const topicDetails = topics.find(t => t.name === topic);
 
-  console.log('TopicPageWrapper topicDetails:', topicDetails)
-
   // If no matching topic is found, render some error message or a 404 page
-  if (topicDetails) {
+  if (topicDetails!== undefined) {
     console.log('TopicPageWrapper topicDetails:', topicDetails)
   } else {
     console.log('Error: topic not found:', topic)
@@ -23,7 +21,7 @@ export const TopicPageWrapper = (props) => {
   // Spread the topic details as props to the TopicPage component
   return <TopicPage {...topicDetails} {...props} />;
 }; 
-const TopicPage = ({ title, name, webcopy, url }) => { 
+const TopicPage = ({ title, name, webcopy }) => { 
   const [newsArticles, setNewsArticles] = useState([]);
   const [educationArticles, setEducationArticles] = useState([]);
   const [currentIntent, setCurrentIntent] = useState('News'); // Default is News
@@ -58,7 +56,7 @@ const TopicPage = ({ title, name, webcopy, url }) => {
   }
 
   return (
-    <div className={`${url}-page`}>
+    <div className={`${name}-page`}>
       <h1>{title}</h1>
       <p>{webcopy}</p>
 
